@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <title>Tickets</title>
+{% endblock %}
+
+{% block content %}
+    <div class="tickets-container">
+        <h1>Tickets</h1>
+        <div class="ticket-list">
+            {% for ticket in tickets %}
+                <div class="ticket-item">
+                    <a href="{{ url_for('.ticket', ticket_id=ticket.id) }}">
+                        <div class="ticket-note">{{ ticket.note }}</div>
+                        <div class="ticket-status">{{ ticket.status }}</div>
+                        <div class="ticket-group">{{ ticket.group }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="back-link">
+            <a href="{{ url_for('.index') }}">Back to Home</a>
+        </div>
+    </div>
+{% endblock %}

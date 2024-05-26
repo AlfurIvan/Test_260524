@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <title>Login</title>
+{% endblock %}
+
+{% block content %}
+    <div class="login-form">
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <input type="submit" value="Login" class="btn">
+        </form>
+    </div>
+{% endblock %}
