@@ -29,7 +29,7 @@ def index():
 @login_required
 def tickets():
     if 'Admin' in [r.name for r in current_user.roles]:
-        tickets = Ticket.query.outerjoin(Status).all()
+        tickets = Ticket.query.all()
     else:
         tickets = Ticket.query.filter(Ticket.group_id.in_([g.id for g in current_user.groups])).all()
 
@@ -40,10 +40,15 @@ def tickets():
 @login_required
 def ticket(ticket_id):
     ticket = Ticket.query.get(ticket_id)
-    if not ticket or (not 'Admin' in [r.name for r in current_user.roles]
-                      and ticket.group_id not in [g.id for g in current_user.groups]):
-        return redirect(url_for('auth.unauthorized'))
+    roles = current_user.roles
+    groups = current_user.groups
+    if not ticket:
+        return redirect(url_for('tickets.tickets'))
+    if ticket.group_id not in [g.id for g in groups]:
+        return redirect(url_for('auth.forbidden'))
     if request.method == 'POST':
+        if 'Manager' not in [r.name for r in roles]:
+            return redirect(url_for('auth.forbidden'))
         ticket.status = Status.query.filter_by(id=request.form['status_id']).first()
         ticket.group = Group.query.filter_by(id=request.form['group_id']).first()
         ticket.note = request.form['note']

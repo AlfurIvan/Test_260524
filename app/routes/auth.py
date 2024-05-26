@@ -33,6 +33,8 @@ def register():
 
         if not err:
             return redirect(url_for('auth.login'))
+        else:
+            flash(err)
     return render_template("register.html")
 
 
@@ -58,4 +60,17 @@ def logout():
 
 @auth_bp.route('/unauthorized')
 def unauthorized():
+    return render_template("401.html")
+
+
+@auth_bp.route('/forbidden')
+def forbidden():
     return render_template("403.html")
+
+
+def users():
+    pass
+
+
+def user():
+    pass
