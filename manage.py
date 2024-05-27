@@ -1,9 +1,11 @@
 from flask.cli import FlaskGroup
 from werkzeug.security import generate_password_hash
-from run import app
+
 from app.models import db, User, Role, Status, Group
+from run import app
 
 cli = FlaskGroup(app)
+
 
 @cli.command("createsu")
 def create_superuser():
@@ -13,10 +15,12 @@ def create_superuser():
         return
 
     username = input("Enter superuser username: ")
+    email = input("Enter superuser email: ")
     password = input("Enter superuser password: ")
 
     superuser = User(
         username=username,
+        email=email,
         password=generate_password_hash(password),
         roles=Role.query.all(),
         groups=Group.query.all()
@@ -35,16 +39,16 @@ def recreate_db():
         db.create_all()
         db.session.commit()
 
+
 @cli.command("drop_db")
 def drop_db():
     with app.app_context():
         db.drop_all()
         db.session.commit()
 
+
 @cli.command("seed")
 def seed_statuses_roles():
-
-
     st_1 = Status(name="Pending")
     st_2 = Status(name="In review")
     st_3 = Status(name="Closed")

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+    <h1>All Users</h1>
+    <div class="users-container">
+        {% for user in users %}
+            <div class="user-card" onclick="window.location.href='{{ url_for('auth.user', user_id=user.id) }}'">
+                <div class="user-info">
+                    <span class="label">Username:</span>
+                    <span class="value">{{ user.username }}</span>
+                </div>
+                <div class="user-info">
+                    <span class="label">Email:</span>
+                    <span class="value">{{ user.email }}</span>
+                </div>
+                <div class="user-info">
+                    <span class="label">Roles:</span>
+                    <span class="value">
+                        {% for role in user.roles %}
+                            {{ role.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="user-info">
+                    <span class="label">Groups:</span>
+                    <span class="value">
+                        {% for group in user.groups %}
+                            {{ group.name }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{{ url_for('tickets.index') }}">Back to Home</a>
+{% endblock %}

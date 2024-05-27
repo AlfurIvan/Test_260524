@@ -218,6 +218,10 @@ header {
     color: #666;
 }
 
+.ticket-user {
+    color: #666;
+}
+
 .back-link {
     margin-top: 20px;
     text-align: center;
@@ -257,3 +261,87 @@ header {
     text-decoration: underline;
 }
 
+.users-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+}
+
+.user-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 24px;
+    background-color: #f9f9f9;
+    width: calc(100% - 32px); /* Full width for smaller screens */
+    max-width: 600px; /* Maximum width for larger screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px;
+}
+
+.user-info {
+    margin-bottom: 12px;
+}
+
+.user-info .label {
+    font-weight: bold;
+}
+
+.user-info .value {
+    margin-left: 8px;
+}
+
+.user-detail-card {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+    margin-bottom: 10px;
+}
+
+.user-info .label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.edit-user-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-user-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.edit-user-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.edit-user-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-user-form button:hover {
+    background-color: #0056b3;
+}

@@ -30,6 +30,15 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="user_id">User:</label>
+                <select id="user_id" name="user_id">
+                    <option value="{{ None }}">Not Assigned</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }} {{ user.email }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create Ticket" class="btn">
             </div>
         </form>

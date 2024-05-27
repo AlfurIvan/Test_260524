@@ -11,9 +11,10 @@
             {% for ticket in tickets %}
                 <div class="ticket-item">
                     <a href="{{ url_for('.ticket', ticket_id=ticket.id) }}">
-                        <div class="ticket-note">{{ ticket.note }}</div>
+                        <div class="ticket-note">Note: {{ ticket.note }}</div>
                         <div class="ticket-status">{{ ticket.status }}</div>
-                        <div class="ticket-group">{{ ticket.group }}</div>
+                        <div class="ticket-group">Group: {{ ticket.group }}</div>
+                        <div class="ticket-user">User: {{ ticket.user }}</div>
                     </a>
                 </div>
             {% endfor %}

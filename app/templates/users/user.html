@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+    <h1>User Details</h1>
+    <div class="user-detail-card">
+        <div class="user-info">
+            <span class="label">Username:</span>
+            <span class="value">{{ user.username }}</span>
+        </div>
+        <div class="user-info">
+            <span class="label">Email:</span>
+            <span class="value">{{ user.email }}</span>
+        </div>
+        <div class="user-info">
+            <span class="label">Roles:</span>
+            <span class="value">
+                {% for role in user.roles %}
+                    {{ role.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+        <div class="user-info">
+            <span class="label">Groups:</span>
+            <span class="value">
+                {% for group in user.groups %}
+                    {{ group.name }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+        </div>
+    </div>
+    {% for role in current_user.roles %}
+        {% if 'Admin' == role.name %}
+            <h2>Edit User</h2>
+            <form method="post" action="{{ url_for('auth.edit_user', user_id=user.id) }}" class="edit-user-form">
+                <div>
+                    <label for="roles">Roles:</label>
+                    <select name="roles" id="roles" multiple>
+                        {% for role in all_roles %}
+                            <option value="{{ role.id }}"
+                                    {% if role in user.roles %}selected{% endif %}>{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="groups">Groups:</label>
+                    <select name="groups" id="groups" multiple>
+                        {% for group in all_groups %}
+                            <option value="{{ group.id }}"
+                                    {% if group in user.groups %}selected{% endif %}>{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        {% endif %}
+    {% endfor %}
+
+    <a href="{{ url_for('auth.users') }}">Back to Users</a>
+{% endblock %}

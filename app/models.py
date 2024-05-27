@@ -16,6 +16,7 @@ groups_users = db.Table('groups_users',
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     groups = db.relationship('Group', secondary=groups_users, backref=db.backref('users', lazy='dynamic'))
@@ -52,4 +53,5 @@ class Ticket(db.Model):
     status = db.relationship('Status', backref='tickets')
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
     group = db.relationship('Group', backref='tickets')
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref='tickets')
