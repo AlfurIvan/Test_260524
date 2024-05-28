@@ -21,7 +21,7 @@ def create_app():
     bcrypt.init_app(app)
     migrate.init_app(app, db)
 
-    from .routing import initialize_resources
+    from .resources import initialize_resources
     api = Api(app)
     initialize_resources(api)
 

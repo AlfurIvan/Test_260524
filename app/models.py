@@ -1,4 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
@@ -39,12 +38,14 @@ class Role(db.Model):
     def __repr__(self):
         return self.name
 
+
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
 
     def __repr__(self):
         return self.name
+
 
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)

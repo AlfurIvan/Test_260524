@@ -1,10 +1,10 @@
 from flask import request, jsonify
 from flask_restful import Resource
 
-from . import db
-from .models import User
-from .schemas import UserSchema
-from .utils import generate_token, verify_token
+from app import db
+from app.models import User
+from app.schemas import UserSchema
+from app.utils import generate_token, login_required, validate_email
 
 user_schema = UserSchema()
 
@@ -24,10 +24,15 @@ class Register(Resource):
 
         if User.query.filter_by(username=data['username']).first():
             return {'message': 'Username already exists'}, 400
+
+        if not validate_email(data["email"]):
+            return {'message': 'Input valid email'}, 400
         if User.query.filter_by(email=data['email']).first():
             return {'message': 'Email already exists'}, 400
+
         if data['password'] != data['confirm_password']:
             return {'message': 'Passwords are not matching'}, 400
+
         data.pop('confirm_password')
 
         errors = user_schema.validate(data)
@@ -58,17 +63,7 @@ class Login(Resource):
 
 
 class UserProfile(Resource):
-    def get(self):
-        token = request.headers.get('Authorization')
-        if not token:
-            return {'message': 'Token is missing'}, 401
 
-        user_id = verify_token(token)
-        if not user_id:
-            return {'message': 'Invalid token'}, 401
-
-        user = User.query.get(user_id)
-        if not user:
-            return {'message': 'User not found'}, 404
-
-        return user_schema.dump(user), 200
+    @login_required
+    def get(self, **kwargs):
+        return user_schema.dump(kwargs.pop("user")), 200

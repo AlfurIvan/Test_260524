@@ -160,3 +160,5 @@ cython_debug/
 .idea/
 .idea
 /migrations/
+# my crappy notes and tears
+/sheet.txt
