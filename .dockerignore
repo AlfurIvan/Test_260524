@@ -1,0 +1,14 @@
+*.pyc
+.build
+.idea
+
+.env
+*.iml
+
+/instance
+/migrations
+ide_conf_dependencies
+
+data
+build
+dist
