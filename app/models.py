@@ -53,3 +53,14 @@ class Status(db.Model):
 
     def __repr__(self):
         return self.name
+
+
+class Ticket(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    note = db.Column(db.Text)
+    status_id = db.Column(db.Integer, db.ForeignKey('status.id'))
+    status = db.relationship('Status', backref='tickets')
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'))
+    group = db.relationship('Group', backref='tickets')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref='tickets')

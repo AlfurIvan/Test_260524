@@ -3,10 +3,8 @@ from flask_restful import Resource
 
 from app import db
 from app.models import User
-from app.schemas import UserSchema
+from app.schemas import user_schema
 from app.utils import generate_token, login_required, validate_email
-
-user_schema = UserSchema()
 
 
 class Register(Resource):

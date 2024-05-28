@@ -3,10 +3,8 @@ from flask_restful import Resource
 
 from app import db
 from app.models import User, Role, Group
-from app.schemas import UserSchema
+from app.schemas import user_schema
 from app.utils import get_user_by_id, login_required, role_required, validate_email
-
-user_schema = UserSchema()
 
 
 class UserList(Resource):
@@ -23,7 +21,7 @@ class UserDetail(Resource):
     @role_required('Manager')
     def get(self, user_id, *args, **kwargs):
         user = get_user_by_id(user_id)
-        if user:
+        if user is None:
             return user_schema.dump(user), 200
         return {"message": "User not found"}, 404
 

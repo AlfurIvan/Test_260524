@@ -6,7 +6,7 @@ import jwt
 from flask import request
 
 from .config import Config
-from .models import User
+from .models import User, Ticket, Status, Group
 
 
 def generate_token(user_id):
@@ -72,3 +72,42 @@ def validate_email(email):
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     print(re.match(pattern, email))
     return re.match(pattern, email)
+
+
+def get_ticket_by_id(ticket_id):
+    return Ticket.query.filter_by(id=ticket_id).first()
+
+
+def validate_ticket(data, user):
+    errors = {}
+    try:
+        note = data["note"]
+        status_name = data["status"]
+        group_name = data["group"] if "Admin" in str(user.roles) else user.groups[0].name
+        user_id = data["user_id"]
+    except KeyError:
+        errors["key_error"] = "Missing required parameters"
+        return errors, None, None, None, None
+    else:
+        # Note validation
+        if note is None:
+            errors["note"] = "No note"
+
+        # Status validation
+        if status_name is None:
+            errors["status"] = "No status provided"
+        status = Status.query.filter_by(name=status_name).first()
+        if status is None:
+            errors["status"] = "Wrong status provided"
+
+        # Group validation
+        group = Group.query.filter_by(name=group_name).first()
+        if group is None:
+            errors["group"] = "Wrong group provided"
+
+        # User validation
+        assign_to_user = User.query.filter_by(id=user_id).first()
+        if user_id and assign_to_user is None:
+            errors["user_id"] = "User not found"
+
+        return errors, note, status, group, assign_to_user
