@@ -21,6 +21,9 @@ class User(UserMixin, db.Model):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     groups = db.relationship('Group', secondary=groups_users, backref=db.backref('users', lazy='dynamic'))
 
+    def __repr__(self):
+        return f"{self.username} {self.email}"
+
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -12,6 +12,10 @@
             {% if role.name == 'Manager' %}
                 <a href="{{ url_for('.create_ticket') }}">Create Ticket</a><br>
             {% endif %}
+            {% if role.name == 'Admin' %}
+                <a href="{{ url_for('auth.users') }}">Edit Users</a><br>
+            {% endif %}
+
         {% endfor %}
         <a href="{{ url_for('auth.logout') }}">Logout</a>
     </div>

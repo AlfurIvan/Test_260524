@@ -6,10 +6,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from app.models import User, Role, Group
 from . import auth_bp
-from .tickets import role_required
+from .utils import role_required
+
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
+    """Register a new user."""
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
@@ -48,6 +50,7 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login a user."""
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -62,17 +65,20 @@ def login():
 
 @auth_bp.route('/logout')
 def logout():
+    """Log out a user."""
     logout_user()
     return redirect(url_for('auth.login'))
 
 
 @auth_bp.route('/unauthorized')
 def unauthorized():
+    """Show unauthorized page."""
     return render_template("exc/401.html")
 
 
 @auth_bp.route('/forbidden')
 def forbidden():
+    """Show forbidden page."""
     return render_template("exc/403.html")
 
 
@@ -80,33 +86,32 @@ def forbidden():
 @login_required
 @role_required('Manager')
 def users():
+    """Show all users."""
     users = User.query.all()
     return render_template("users/users.html", users=users)
+
 
 @auth_bp.route('/users/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 @role_required('Admin')
 def user(user_id):
+    """Show user details. -- here you can show assign roles and groups to special user."""
+    if request.method == 'POST':
+        if 'Admin' not in [role.name for role in current_user.roles]:
+            return redirect(url_for('.forbidden', user_id=user_id))
+
+        user = User.query.get_or_404(user_id)
+
+        roles = request.form.getlist('roles')
+        groups = request.form.getlist('groups')
+
+        user.roles = [Role.query.get(role_id) for role_id in roles]
+        user.groups = [Group.query.get(group_id) for group_id in groups]
+
+        db.session.commit()
+        flash('User updated successfully.')
+        return redirect(url_for('auth.user', user_id=user.id))
     user = User.query.get_or_404(user_id)
     all_roles = Role.query.all()
     all_groups = Group.query.all()
     return render_template('users/user.html', user=user, all_roles=all_roles, all_groups=all_groups)
-
-
-@auth_bp.route('/users/<int:user_id>/edit', methods=['POST'])
-@login_required
-def edit_user(user_id):
-    if 'Admin' not in [role.name for role in current_user.roles]:
-        return redirect(url_for('.forbidden', user_id=user_id))
-
-    user = User.query.get_or_404(user_id)
-
-    roles = request.form.getlist('roles')
-    groups = request.form.getlist('groups')
-
-    user.roles = [Role.query.get(role_id) for role_id in roles]
-    user.groups = [Group.query.get(group_id) for group_id in groups]
-
-    db.session.commit()
-    flash('User updated successfully.')
-    return redirect(url_for('auth.user', user_id=user.id))

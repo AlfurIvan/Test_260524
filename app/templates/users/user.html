@@ -33,7 +33,7 @@
     {% for role in current_user.roles %}
         {% if 'Admin' == role.name %}
             <h2>Edit User</h2>
-            <form method="post" action="{{ url_for('auth.edit_user', user_id=user.id) }}" class="edit-user-form">
+            <form method="post" action="{{ url_for('auth.user', user_id=user.id) }}" class="edit-user-form">
                 <div>
                     <label for="roles">Roles:</label>
                     <select name="roles" id="roles" multiple>

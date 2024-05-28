@@ -1,5 +1,3 @@
-from functools import wraps
-
 from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 from sqlalchemy import or_
@@ -7,28 +5,20 @@ from sqlalchemy import or_
 from app import db
 from app.models import Ticket, Group, Status, User
 from . import tickets_bp
-
-
-def role_required(role):
-    def wrapper(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if current_user.is_anonymous or role not in [r.name for r in current_user.roles]:
-                return redirect(url_for('auth.forbidden'))
-            return f(*args, **kwargs)
-        return decorated_function
-    return wrapper
+from .utils import role_required
 
 
 @tickets_bp.route('/')
 @login_required
 def index():
+    """Welcome page."""
     return render_template('tickets/index.html')
 
 
 @tickets_bp.route('/tickets')
 @login_required
 def tickets():
+    """List of all tickets."""
     if 'Admin' in [r.name for r in current_user.roles]:
         tickets = Ticket.query.all()
     else:
@@ -45,6 +35,7 @@ def tickets():
 @tickets_bp.route('/ticket/<int:ticket_id>', methods=['GET', 'POST'])
 @login_required
 def ticket(ticket_id):
+    """detailed ticket wiev"""
     ticket = Ticket.query.get(ticket_id)
     roles = current_user.roles
     groups = current_user.groups
@@ -71,6 +62,7 @@ def ticket(ticket_id):
 @login_required
 @role_required('Manager')
 def create_ticket():
+    """Create a new ticket(if you are a manager)."""
     if request.method == 'POST':
         note = request.form['note']
         group_id = request.form['group_id']

@@ -9,6 +9,7 @@ login_manager = LoginManager()
 
 
 def create_app():
+    """Application factory"""
     app = Flask(__name__)
     app.config.from_object('config.Config')
 
