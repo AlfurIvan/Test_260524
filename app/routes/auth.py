@@ -96,22 +96,19 @@ def users():
 @role_required('Admin')
 def user(user_id):
     """Show user details. -- here you can show assign roles and groups to special user."""
+    user = User.query.filter_by(id=user_id).first()
     if request.method == 'POST':
         if 'Admin' not in [role.name for role in current_user.roles]:
             return redirect(url_for('.forbidden', user_id=user_id))
 
-        user = User.query.get_or_404(user_id)
-
         roles = request.form.getlist('roles')
         groups = request.form.getlist('groups')
-
-        user.roles = [Role.query.get(role_id) for role_id in roles]
-        user.groups = [Group.query.get(group_id) for group_id in groups]
+        print(roles,groups)
+        user.roles = [Role.query.filter_by(id=role_id).first() for role_id in roles]
+        user.groups = [Group.query.filter_by(id=group_id).first() for group_id in groups]
 
         db.session.commit()
         flash('User updated successfully.')
-        return redirect(url_for('auth.user', user_id=user.id))
-    user = User.query.get_or_404(user_id)
     all_roles = Role.query.all()
     all_groups = Group.query.all()
     return render_template('users/user.html', user=user, all_roles=all_roles, all_groups=all_groups)

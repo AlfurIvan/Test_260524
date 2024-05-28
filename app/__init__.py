@@ -8,10 +8,10 @@ migrate = Migrate()
 login_manager = LoginManager()
 
 
-def create_app():
+def create_app(conf_path='config.Config'):
     """Application factory"""
     app = Flask(__name__)
-    app.config.from_object('config.Config')
+    app.config.from_object(conf_path)
 
     db.init_app(app)
     migrate.init_app(app, db)
