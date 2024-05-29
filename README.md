@@ -30,10 +30,9 @@ Start application:
 
 Run tests:
  -
-- I'll make a couple of them, and coverage will be not 100%)
+- I made a couple of them, and coverage will be not 100%)
     
       sudo docker-compose exec backend pytest
 - or just 
     
       pytest
-    
