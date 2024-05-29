@@ -3,7 +3,7 @@ from flask_restful import Resource
 from sqlalchemy import or_
 
 from app import db
-from app.models import Ticket
+from app.models import Ticket, Role
 from app.schemas import ticket_schema
 from app.utils import login_required, role_required, get_ticket_by_id, validate_ticket
 
@@ -127,7 +127,11 @@ class TicketDetail(Resource):
         """
         ticket = get_ticket_by_id(ticket_id)
         if ticket is not None:
-            return ticket_schema.dump(ticket), 200
+            user = kwargs["user"]
+            if ticket.group not in user.groups and ticket.user != user:
+                return {"message": "You are not allowed to see tickets from another groups"}, 403
+            else:
+                return ticket_schema.dump(ticket), 200
         else:
             return {"message": "Ticket not found"}, 404
 
@@ -211,6 +215,7 @@ class TicketDetail(Resource):
                   example: Internal server error
         """
         user = kwargs["user"]
+
         data = request.get_json()
 
         errors, note, status, group, assign_to_user = validate_ticket(data, user)
@@ -218,6 +223,10 @@ class TicketDetail(Resource):
             return {"message": errors}, 400
 
         ticket = get_ticket_by_id(ticket_id)
+        print(user.groups, ticket.group)
+        if ticket.group not in user.groups and ticket.user != user:
+            return {"message": "You are not allowed to see or modify tickets from another groups"}, 403
+
         ticket.note = note
         ticket.status = status
         ticket.group = group
@@ -455,7 +464,9 @@ class TicketCreate(Resource):
         errors, note, status, group, assign_to_user = validate_ticket(data, user)
         if errors:
             return {"message": errors}, 400
-
+        print(user.groups, group)
+        if group not in user.groups and "Admin" not in str(user.roles):
+            return {"message": "You are not allowed to create tickets for other groups"}, 403
         ticket = Ticket(
             note=note,
             status=status,

@@ -83,7 +83,7 @@ def validate_ticket(data, user):
     try:
         note = data["note"]
         status_name = data["status"]
-        group_name = data["group"] if "Admin" in str(user.roles) else user.groups[0].name
+        group_name = data["group"]
         user_id = data["user_id"]
     except KeyError:
         errors["key_error"] = "Missing required parameters"
