@@ -2,7 +2,7 @@ import pytest
 from werkzeug.security import generate_password_hash
 
 from app import create_app, db
-from app.models import User, Role, Group, Status
+from app.models import User, Role, Group, Status, Ticket
 
 
 class Config(object):
@@ -71,6 +71,24 @@ def init_database():
         groups=[gr_2]
     )
 
+    t1 = Ticket(
+        note="Ticket 1",
+        status=st_1,
+        group=gr_1,
+    )
+    t2 = Ticket(
+        note="Ticket 2",
+        status=st_2,
+        group=gr_2
+    )
+    t3 = Ticket(
+        note="Ticket 3",
+        status=st_3,
+        group=gr_3,
+        user=user3
+    )
+
+
     db.session.add(st_1)
     db.session.add(st_2)
     db.session.add(st_3)
@@ -83,6 +101,9 @@ def init_database():
     db.session.add(user1)
     db.session.add(user2)
     db.session.add(user3)
+    db.session.add(t1)
+    db.session.add(t2)
+    db.session.add(t3)
     db.session.commit()
     yield db
     db.session.remove()
@@ -91,6 +112,9 @@ def init_database():
 def get_header(un, pwd, client):
     """DRY"""
     login_resp = client.post('/login', json={'username': un, 'password': pwd})
-    token = login_resp.json['token']
-    assert token is not None
-    return {'Authorization': token}
+    try:
+        token = login_resp.json['token']
+    except KeyError:
+        raise KeyError("Wrong credentials are passed to get_header() in tests")
+    else:
+        return {'Authorization': token}
