@@ -26,10 +26,14 @@ Start application:
       docker compose exec backend python manage.py createsu
 - Read documentation
 
-      http://0.0.0.0:5000/api/docs/#/
+      http://0.0.0.0:5000/api/docs/
 
 Run tests:
  -
 - I'll make a couple of them, and coverage will be not 100%)
     
-      coming soon
+      sudo docker-compose exec backend pytest
+- or just 
+    
+      pytest
+    
