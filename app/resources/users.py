@@ -31,7 +31,7 @@ class UserList(Resource):
             schema:
               type: array
               items:
-                $ref: '#/definitions/User'
+                schena
           401:
             description: Unauthorized (invalid or missing token)
             schema:
@@ -129,7 +129,7 @@ class UserDetail(Resource):
                   example: Internal server error
         """
         user = get_user_by_id(user_id)
-        if user is None:
+        if user is not None:
             return user_schema.dump(user), 200
         return {"message": "User not found"}, 404
 

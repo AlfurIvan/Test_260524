@@ -16,9 +16,9 @@ bcrypt = Bcrypt()
 migrate = Migrate()
 
 
-def create_app():
+def create_app(conf=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(conf)
 
     db.init_app(app)
     bcrypt.init_app(app)
